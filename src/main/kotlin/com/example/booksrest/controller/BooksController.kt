@@ -1,11 +1,12 @@
 package com.example.booksrest.controller
 
+import com.example.booksrest.dto.BookDto
 import com.example.booksrest.model.Book
 import com.example.booksrest.service.BookService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.*
+import java.math.BigDecimal
 
 @RestController
 @RequestMapping("/books")
@@ -14,6 +15,26 @@ class BooksController(
     private val bookService: BookService,
 ){
     @GetMapping
-    fun getAll(): List<Book>? = bookService.getAllBooks()
+    fun getAllBooks(): List<Book> = bookService.getAll()
+
+    @GetMapping("/{id}")
+    fun getBookById(@PathVariable id:Long) = bookService.getById(id)
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PutMapping
+    fun newBook(@RequestBody book: BookDto){
+        bookService.create(book)
+    }
+
+    @PatchMapping("/{id}")
+    fun pathBook(@PathVariable id: Long, @RequestBody update: Map<String,BigDecimal>){
+        bookService.update(id,update)
+    }
+
+    @DeleteMapping("/{id}")
+    fun deleteBook(@PathVariable id: Long){
+        bookService.delete(id)
+    }
+
 
 }
